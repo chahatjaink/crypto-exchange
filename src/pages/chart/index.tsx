@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
-import { fetchOhlcvData } from '@/services/ohlcv';
 import { CandlestickData } from '@/interface';
+import fetchChartData from '@/services/fetchChartData';
 
 export default function CandlestickChart() {
     const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -9,12 +9,18 @@ export default function CandlestickChart() {
 
     useEffect(() => {
         async function fetchData() {
-            const ohlcvData = await fetchOhlcvData();
-            setOhlcvData(ohlcvData.data);
-            console.log("TCL: fetchOhlcvData -> ohlcvData", ohlcvData.data);
-            const data = [
-                { time: '2023-10-01', open: 100, high: 110, low: 90, close: 105 },
-            ];
+            const response = await fetchChartData();
+            const data: CandlestickData[] = response.map((item: CandlestickData[]) => {
+                return {
+                    time: item[0],
+                    open: item[1],
+                    high: item[2],
+                    low: item[3],
+                    close: item[4],
+                }
+            })
+            setOhlcvData(data);
+            console.log("TCL: fetchOhlcvData -> response", ohlcvData);
         }
         fetchData();
     }, [])
@@ -26,7 +32,6 @@ export default function CandlestickChart() {
 
             // Create a candlestick series  
             const candlestickSeries = chart.addCandlestickSeries();
-
             // Add the data to the candlestick series
             candlestickSeries.setData(ohlcvData);
 

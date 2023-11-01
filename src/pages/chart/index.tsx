@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { createChart, CrosshairMode, IChartApi, ISeriesApi, LineStyle, OhlcData } from 'lightweight-charts';
 import fetchChartData from '@/services/fetchChartData';
 import Dropdown from '@/components/Dropdown/Dropdown';
-import { ClassNames } from '@emotion/react';
 import { Stack } from '@mui/material';
+import { dropdownStackStyles } from '@/util/dropdown.styles';
 
 export default function CandlestickChart() {
     const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -35,7 +35,7 @@ export default function CandlestickChart() {
             setOhlcvData(data);
         }
         fetchData();
-    }, [granularity,token]);
+    }, [granularity, token]);
 
     useEffect(() => {
         if (chartContainerRef.current) {
@@ -64,7 +64,6 @@ export default function CandlestickChart() {
                     },
                 },
             })
-            // Setting the border color for the horizontal axis
             chart.timeScale().applyOptions({
                 ticksVisible: true,
                 timeVisible: true,
@@ -96,32 +95,24 @@ export default function CandlestickChart() {
 
 
     return (
-        <Stack width='100vw' height='100vh'>
-            <Stack sx={{
-                display: "flex",
-                backgroundColor: "white",
-                alignItems: "flex-start",
-                margin: "auto",
-            }}>
+        <Stack>
+            
+            <Stack width='100vw' height='100vh'>
                 <Stack sx={{
-                    position: "absolute",
+                    display: "flex",
                     backgroundColor: "white",
-                    zIndex: 10,
-                    marginTop: "20px",
+                    alignItems: "flex-start",
+                    margin: "auto",
                 }}>
-                    <Dropdown id='granularity' type='Granularity' onChange={handleGranularityChange} value={granularity} />
+                    <Stack sx={{ ...dropdownStackStyles }}>
+                        <Dropdown id='granularity' type='Granularity' onChange={handleGranularityChange} value={granularity} />
+                    </Stack>
+                    <Stack sx={{ ...dropdownStackStyles, left: "24%" }}>
+                        <Dropdown id='token' type='Token' onChange={handleTokenChange} value={token} />
+                    </Stack>
+                    <Stack ref={chartContainerRef} sx={{ cursor: 'crosshair' }} />
                 </Stack>
-                <Stack sx={{
-                    position: "absolute",
-                    left: "24rem",
-                    backgroundColor: "white",
-                    zIndex: 10,
-                    marginTop: "20px",
-                }}>
-                    <Dropdown id='token' type='Token' onChange={handleTokenChange} value={token} />
-                </Stack>
-                <Stack ref={chartContainerRef} />
-            </Stack>
-        </Stack >
+            </Stack >
+        </Stack>
     );
 }

@@ -21,6 +21,7 @@ export default function Dropdown(props: DropdownProps) {
                 <Select
                     labelId={props.id}
                     id={props.id}
+                    defaultValue={props.value}
                     value={props.value}
                     label={props.id}
                     onChange={props.onChange}

@@ -47,11 +47,12 @@ export default function CandlestickChart() {
                 JSON.stringify({
                     event: 'subscribe',
                     channel: 'book',
-                    symbol: 'tBTCUSD',
+                    symbol: `t${token}USD`,
                 })
             );
             w.onmessage = (event) => {
                 const data = JSON.parse(event.data);
+                console.log("TCL: w.onmessage -> data", data)
                 setOrderBook(data);
             }
         }
@@ -59,7 +60,7 @@ export default function CandlestickChart() {
         return () => {
             return w.close();
         }
-    }, [orderBook])
+    }, [token]);
 
     useEffect(() => {
         if (chartContainerRef.current) {

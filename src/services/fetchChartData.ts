@@ -5,7 +5,7 @@ export default async function fetchChartData(granularity:string, token:string) {
         const response = await axios.get('/api/fetchData',{
             params: {
                 granularity,
-                token: 'BTC'
+                token
             }
         });
         const data = response.data;

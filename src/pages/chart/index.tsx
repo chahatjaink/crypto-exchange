@@ -20,7 +20,7 @@ export default function CandlestickChart() {
     };
     useEffect(() => {
         async function fetchData() {
-            const response = await fetchChartData(granularity, 'BTC');
+            const response = await fetchChartData(granularity, token);
             console.log("TCL: fetchData -> response", response)
             const data: OhlcData[] = response.map((item: Array<OhlcData>) =>
             ({
@@ -35,7 +35,7 @@ export default function CandlestickChart() {
             setOhlcvData(data);
         }
         fetchData();
-    }, [granularity]);
+    }, [granularity,token]);
 
     useEffect(() => {
         if (chartContainerRef.current) {
@@ -109,8 +109,16 @@ export default function CandlestickChart() {
                     zIndex: 10,
                     marginTop: "20px",
                 }}>
-                    <Dropdown id='granularity' onChange={handleGranularityChange} value={granularity} />
-                    <Dropdown id='token' onChange={handleTokenChange} value={token} />
+                    <Dropdown id='granularity' type='Granularity' onChange={handleGranularityChange} value={granularity} />
+                </Stack>
+                <Stack sx={{
+                    position: "absolute",
+                    left: "24rem",
+                    backgroundColor: "white",
+                    zIndex: 10,
+                    marginTop: "20px",
+                }}>
+                    <Dropdown id='token' type='Token' onChange={handleTokenChange} value={token} />
                 </Stack>
                 <Stack ref={chartContainerRef} />
             </Stack>

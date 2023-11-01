@@ -6,3 +6,5 @@ export type DropdownProps = {
     value: string;
     onChange: SelectInputProps<any>['onChange'];
 };
+
+export type BitfinexResponse = [number, [number, number, number]];

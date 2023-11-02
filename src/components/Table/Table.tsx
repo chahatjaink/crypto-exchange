@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,43 +6,30 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { OrderData } from '@/interface';
+import fetchOrdersData from '@/services/fetchOrdersData';
 
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-) {
-    return { name, calories, fat, carbs, protein };
-}
+export default function BasicTable(props: { orderBook: any, token: string }) {
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-];
-
-export default function BasicTable() {
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 200 }} aria-label="caption table">
                 <caption>Order Book</caption>
                 <TableHead>
                     <TableRow>
+                        <TableCell >Price</TableCell>
                         <TableCell >Count</TableCell>
-                        <TableCell >Amount&nbsp;(g)</TableCell>
-                        <TableCell >Price&nbsp;(g)</TableCell>
+                        <TableCell >Amount</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.name}>
-                            <TableCell >{row.calories}</TableCell>
-                            <TableCell >{row.fat}</TableCell>
-                            <TableCell >{row.carbs}</TableCell>
-                        </TableRow>
-                    ))}
+                    {
+                        props.orderBook ? props.orderBook[1].map((row: any) => (
+                            <TableCell key={`${props.orderBook[0]}${row}`}>
+                                <TableRow key={`${props.orderBook[1][2]}`}>{row}</TableRow>
+                            </TableCell>
+                        )):null 
+                    }
                 </TableBody>
             </Table>
         </TableContainer>

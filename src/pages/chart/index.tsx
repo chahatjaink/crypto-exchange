@@ -12,7 +12,7 @@ export default function CandlestickChart() {
     const [ohlcvData, setOhlcvData] = useState<OhlcData[]>([])
     const [granularity, setGranularity] = useState('30m');
     const [token, setToken] = useState('BTC');
-    const [orderBook, setOrderBook] = useState<BitfinexResponse>();
+    const [orderBook, setOrderBook] = useState<BitfinexResponse>([0, [0, 0, 0]]);
 
     const handleGranularityChange = (event: any) => {
         setGranularity(event.target.value);
@@ -52,8 +52,8 @@ export default function CandlestickChart() {
             );
             w.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                console.log("TCL: w.onmessage -> data", data)
-                setOrderBook(data);
+                if (data.event !== 'info' && data.event !== 'subscribed' && Array.isArray(data[1]))
+                    setOrderBook(data);
             }
         }
 
@@ -143,13 +143,13 @@ export default function CandlestickChart() {
                     height='100vh'
                     sx={{ marginRight: '20px' }}
                 >
-                    <BasicTable key={'profit'} />
+                    <BasicTable key={'bid'} token={token} orderBook={orderBook[1][2] > 0 ? orderBook : null} />
                 </Stack>
                 <Stack
                     width='30vw'
                     height='100vh'
                 >
-                    <BasicTable key={'loss'} />
+                    <BasicTable key={'ask'} token={token} orderBook={orderBook[1][2] < 0 ? orderBook : null} />
                 </Stack>
             </Stack>
         </Stack >

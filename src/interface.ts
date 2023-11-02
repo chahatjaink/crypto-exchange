@@ -8,3 +8,4 @@ export type DropdownProps = {
 };
 
 export type BitfinexResponse = [number, [number, number, number]];
+export type OrderData = [number, number, number];

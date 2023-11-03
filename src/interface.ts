@@ -6,3 +6,10 @@ export type DropdownProps = {
     value: string;
     onChange: SelectInputProps<any>['onChange'];
 };
+
+export type BitfinexResponse = [number, Array<number>];
+export type OrderData = {
+    price: number,
+    count: number,
+    amount: number,
+}

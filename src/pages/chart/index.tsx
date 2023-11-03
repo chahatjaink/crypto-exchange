@@ -1,15 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
-import { createChart, CrosshairMode, IChartApi, ISeriesApi, LineStyle, OhlcData } from 'lightweight-charts';
+import { useState, useEffect } from 'react';
+import { OhlcData } from 'lightweight-charts';
 import fetchChartData from '@/services/fetchChartData';
 import Dropdown from '@/components/Dropdown/Dropdown';
 import { Stack } from '@mui/material';
-import { dropdownStackStyles } from '@/util/dropdown.styles';
+import BasicTable from '@/components/Table/Table';
+import { BitfinexResponse } from '@/interface';
+import { config } from '../../../configs/ohlcv';
+import { formatChartData } from '@/util/formatChartData';
+import Chart from '@/components/Chart/Chart';
+import { dropdownStackStyles } from '@/util/config.styles';
 
 export default function CandlestickChart() {
-    const chartContainerRef = useRef<HTMLDivElement>(null);
+
     const [ohlcvData, setOhlcvData] = useState<OhlcData[]>([])
-    const [granularity, setGranularity] = useState('30m');
-    const [token, setToken] = useState('BTC');
+    const [granularity, setGranularity] = useState(config.granularity);
+    const [token, setToken] = useState(config.token);
+    const [orderBook, setOrderBook] = useState<BitfinexResponse>();
 
     const handleGranularityChange = (event: any) => {
         setGranularity(event.target.value);
@@ -18,85 +24,41 @@ export default function CandlestickChart() {
     const handleTokenChange = (event: any) => {
         setToken(event.target.value);
     };
+
     useEffect(() => {
         async function fetchData() {
             const response = await fetchChartData(granularity, token);
-            console.log("TCL: fetchData -> response", response)
-            const data: OhlcData[] = response.map((item: Array<OhlcData>) =>
-            ({
-                time: Number(item[0]) / 1000,
-                open: item[1],
-                close: item[2],
-                high: item[3],
-                low: item[4],
-            })
-            )
-                .sort((a: OhlcData, b: OhlcData) => Number(a.time) - Number(b.time));
+            const data: OhlcData[] = formatChartData(response)
             setOhlcvData(data);
         }
         fetchData();
     }, [granularity, token]);
 
     useEffect(() => {
-        if (chartContainerRef.current) {
-            const chart: IChartApi = createChart(chartContainerRef.current, {
-                width: 1200, height: 600, layout: {
-                    background: { color: '#222' },
-                    textColor: '#DDD',
-                },
-                grid: {
-                    vertLines: { color: '#444' },
-                    horzLines: { color: '#444' },
-                },
-            });
-            chart.applyOptions({
-                crosshair: {
-                    mode: CrosshairMode.Magnet,
-                    vertLine: {
-                        width: 2,
-                        color: '#C3BCDB44',
-                        style: LineStyle.Solid,
-                        labelBackgroundColor: '#9B7DFF',
-                    },
-                    horzLine: {
-                        color: '#9B7DFF',
-                        labelBackgroundColor: '#9B7DFF',
-                    },
-                },
-            })
-            chart.timeScale().applyOptions({
-                ticksVisible: true,
-                timeVisible: true,
-                borderColor: '#71649C',
-                barSpacing: 10,
-                fixRightEdge: true,
-                rightBarStaysOnScroll: true
-            });
-            const candlestickSeries: ISeriesApi<"Candlestick"> = chart.addCandlestickSeries();
-            candlestickSeries.setData(ohlcvData);
-            candlestickSeries.applyOptions({
-                wickUpColor: 'rgb(156, 204, 0)',
-                upColor: 'rgb(156, 204, 0)',
-                wickDownColor: 'rgb(225, 50, 85)',
-                downColor: 'rgb(225, 50, 85)',
-                borderVisible: false,
-            });
-            candlestickSeries.priceScale().applyOptions({
-                scaleMargins: {
-                    top: 0.1,
-                    bottom: 0.2,
-                },
-            });
-            return () => {
-                chart.remove();
-            };
+        const wsUrl: any = config.WEBSOCKET_URL ?? 'wss://api-pub.bitfinex.com/ws/2'
+        const w = new WebSocket(wsUrl);
+        w.onopen = () => {
+            w.send(
+                JSON.stringify({
+                    event: 'subscribe',
+                    channel: 'book',
+                    symbol: `t${token}USD`,
+                })
+            );
+            w.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.event !== 'info' && data.event !== 'subscribed' && Array.isArray(data[1]))
+                    setOrderBook(data);
+            }
         }
-    }, [ohlcvData]);
 
+        return () => {
+            return w.close();
+        }
+    }, [token]);
 
     return (
-        <Stack>
-            
+        <Stack sx={{ backgroundImage: 'url("/bg.jpg")' }}>
             <Stack width='100vw' height='100vh'>
                 <Stack sx={{
                     display: "flex",
@@ -104,15 +66,21 @@ export default function CandlestickChart() {
                     alignItems: "flex-start",
                     margin: "auto",
                 }}>
-                    <Stack sx={{ ...dropdownStackStyles }}>
+                    <Stack sx={dropdownStackStyles}>
                         <Dropdown id='granularity' type='Granularity' onChange={handleGranularityChange} value={granularity} />
                     </Stack>
-                    <Stack sx={{ ...dropdownStackStyles, left: "24%" }}>
+                    <Stack sx={{ ...dropdownStackStyles, left: "380px" }}>
                         <Dropdown id='token' type='Token' onChange={handleTokenChange} value={token} />
                     </Stack>
-                    <Stack ref={chartContainerRef} sx={{ cursor: 'crosshair' }} />
+                    <Chart ohlcvData={ohlcvData} />
                 </Stack>
             </Stack >
-        </Stack>
+            <Stack
+                width='100%'
+                height='100%'
+            >
+                <BasicTable token={token} orderBook={orderBook} />
+            </Stack>
+        </Stack >
     );
 }

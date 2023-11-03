@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { DropdownProps } from '@/interface';
+import { config } from '../../../configs/ohlcv';
 
 export default function Dropdown(props: DropdownProps) {
-    const granularityOptions = [
-        '1m', '5m', '15m', '30m', '1h', '3h', '6h', '12h', '1D', '1W', '14D', '1M'
-    ];
+    const granularityOptions = config.granularityOptions;
 
-    const tokenOptions = ['BTC', 'ETH', 'LTC'];
+    const tokenOptions = config.tokenOptions;
 
     return (
         <Box sx={{

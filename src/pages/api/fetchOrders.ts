@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 
-const fetchData = async (req: NextApiRequest, res: NextApiResponse) => {
+const fetchOrders = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const { granularity, token } = req.query;
+        const { token } = req.query;
         const apiUrl = process.env.API_URL || '';
-        const url = `${apiUrl}/candles/trade%3A${granularity}%3At${token}USD/hist`;
+        const url = `${apiUrl}/book/t${token}USD/P0?len=25`;
         const response = await axios.get(url);
         const data = response.data;
         res.status(200).json(data);
@@ -15,5 +15,5 @@ const fetchData = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 };
 
-export default fetchData;
+export default fetchOrders;
 

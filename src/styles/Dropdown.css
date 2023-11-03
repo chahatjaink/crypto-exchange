@@ -1,0 +1,33 @@
+/* DropdownStyles.css */
+
+.container {
+  display: flex;
+  background-color: white;
+  align-items: flex-start;
+  margin: auto;
+}
+
+.left-dropdown {
+  position: absolute;
+  left: 10px;
+  top: 20px;
+  background-color: white;
+  z-index: 10;
+  margin-top: 20px;
+}
+
+.right-dropdown {
+  margin-top: 20px;
+  /* Adjust as needed */
+  margin-left: 0;
+  /* Remove the left margin */
+  align-self: flex-start;
+  /* Align to the top within the container */
+}
+
+/* Style for the chart container */
+.chart-container {
+  display: flex;
+  align-self: flex-start;
+  /* Align to the top within the container */
+}

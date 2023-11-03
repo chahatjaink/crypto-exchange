@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { SelectInputProps } from '@mui/material/Select/SelectInput';
+import { DropdownProps } from '@/interface';
 
-export default function Dropdown(props: { id: string, value: string, onChange: SelectInputProps<any>['onChange'] }) {
+export default function Dropdown(props: DropdownProps) {
     const granularityOptions = [
         '1m', '5m', '15m', '30m', '1h', '3h', '6h', '12h', '1D', '1W', '14D', '1M'
     ];
@@ -17,24 +17,27 @@ export default function Dropdown(props: { id: string, value: string, onChange: S
             zIndex: 10,
         }}>
             <FormControl fullWidth>
-                <InputLabel id={props.id} sx={{ color: "white", fontWeight: "bold", fontSize: 20 }}>Granularity</InputLabel>
+                <InputLabel id={props.id} sx={{ color: "white", fontWeight: "bold", fontSize: 20 }}>{props.type}</InputLabel>
                 <Select
                     labelId={props.id}
-                    id="demo-simple-select"
+                    id={props.id}
+                    defaultValue={props.value}
                     value={props.value}
                     label={props.id}
                     onChange={props.onChange}
                 >
                     {
-                        props.id === 'granularity' ? (granularityOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))) : (tokenOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        )))
+                        props.type === 'Granularity' ?
+                            (granularityOptions.map((option, optionIndex) => (
+                                <MenuItem key={option + optionIndex} value={option}>
+                                    {option}
+                                </MenuItem>
+                            )))
+                            : (tokenOptions.map((option, optionIndex) => (
+                                <MenuItem key={option + optionIndex} value={option}>
+                                    {option}
+                                </MenuItem>
+                            )))
                     }
                 </Select>
             </FormControl>

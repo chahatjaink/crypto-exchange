@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export default async function fetchOrdersData(token:string) {
+export default async function fetchOrdersData(token: string) {
     try {
-        const response = await axios.get('/api/fetchOrders',{
+        const response = await axios.get('/api/fetchOrders', {
             params: {
                 token
             }

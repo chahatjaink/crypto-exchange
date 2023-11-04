@@ -55,7 +55,7 @@ export default function BasicTable(props: { orderBook: any, token: string }) {
     }, [props.orderBook])
 
     return (
-        <Stack sx={{ flexDirection: 'row', justifyContent: 'space-evenly', border: "1px solid red" }}>
+        <Stack sx={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
             <Stack >
                 <OrderTable orderData={bidData} count={count} />
             </Stack>

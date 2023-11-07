@@ -1,57 +1,45 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { OrderData } from '@/interface';
-import fetchOrdersData from '@/services/fetchOrdersData';
 import { Stack } from '@mui/material';
 import OrderTable from './OrderTable';
+import fetchBookData from '@/services/fetchBookData';
+import { formatOrderBookData } from '@/util/formatOrderBookData';
 
-export default function BasicTable(props: { orderBook: any, token: string }) {
+//OrderBookTable component
+export default function BasicTable(props: { orderBook: OrderData | undefined, coin: string }) {
     const [bidData, setBidData] = useState<Array<OrderData>>([]);
     const [askData, setAskData] = useState<Array<OrderData>>([]);
     const [count, setCount] = useState(0);
 
-    function setOrderData(orders: Array<OrderData>) {
+    //util 
+    function setOrderData(order: OrderData) {
         setCount(prevCount => prevCount + 1)
-        orders.forEach(order => {
-            if (order?.amount > 0 && order?.amount != 1) {
-                setBidData((prevData) => {
-                    if (prevData.length > 20) prevData.splice(count % 20, 1)
-                    return [...prevData, order];
-                });
-            } else if (order?.amount < 0 && order?.amount != -1) {
-                setAskData(prevData => {
-                    if (prevData.length > 20) prevData.splice(count % 20, 1)
-                    return [...prevData, order];
-                });
-            }
-        })
+        if (order?.amount > 0 && order?.amount != 1) {
+            setBidData((prevData) => {
+                if (prevData.length > 20) prevData.splice(count % 20, 1)
+                return [...prevData, order];
+            });
+        } else if (order?.amount < 0 && order?.amount != -1) {
+            setAskData(prevData => {
+                if (prevData.length > 20) prevData.splice(count % 20, 1)
+                return [...prevData, order];
+            });
+        }
     }
-
+    //arrow function everywhere
     useEffect(() => {
-        async function fetchOrders() {
-            const orders: Array<Array<number>> = await fetchOrdersData(props.token);
-            const orderData: Array<OrderData> = orders.map(order => {
-                return {
-                    price: order[0],
-                    count: order[1],
-                    amount: order[2]
-                }
-            })
-            setOrderData(orderData)
+        const fetchOrders = async () => {
+            const orders: Array<Array<number>> = await fetchBookData(props.coin);
+            const orderDataArr: Array<OrderData> = orders.map(order => formatOrderBookData(order))
+            orderDataArr.forEach(orderData => setOrderData(orderData))
         }
         fetchOrders();
-    }, [props.token])
+    }, [props.coin])
 
     useEffect(() => {
-        const orderArr = props.orderBook?.[1]
-        const orders: Array<OrderData> = [
-            {
-                price: orderArr?.[0],
-                count: orderArr?.[1],
-                amount: orderArr?.[2],
-            }
-        ]
-        setOrderData(orders)
+        if (props?.orderBook)
+            setOrderData(props.orderBook)
     }, [props.orderBook])
 
     return (

@@ -1,11 +1,11 @@
-import { CrosshairMode, LineStyle } from "lightweight-charts"
-import { config } from "../../configs/ohlcv"
+import { config } from "../configs/ohlcv.constant"
 
 export const dropdownStackStyles = {
     position: "absolute",
     backgroundColor: "white",
     zIndex: 10,
     marginTop: "20px",
+    left: "380px"
 }
 
 export const createChartStyles = {
@@ -19,7 +19,7 @@ export const createChartStyles = {
     },
 }
 
-export const timescaleOptions={
+export const timescaleOptions = {
     ticksVisible: true,
     timeVisible: true,
     borderColor: '#71649C',
@@ -28,7 +28,7 @@ export const timescaleOptions={
     rightBarStaysOnScroll: true
 }
 
-export const candleStickOptions ={
+export const candleStickOptions = {
     wickUpColor: config.upColor,
     upColor: config.upColor,
     wickDownColor: config.downColor,

@@ -1,5 +1,5 @@
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { OrderData } from "@/interface";
-import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 export default function OrderTable(props: { orderData: Array<OrderData>, count: number }) {
     return (
@@ -7,7 +7,7 @@ export default function OrderTable(props: { orderData: Array<OrderData>, count: 
             <Table padding="checkbox" sx={{ minWidth: 500 }} aria-label="caption table">
                 <caption>Order Book</caption>
                 <TableHead>
-                    <TableRow sx={{backgroundColor:"GrayText"}}>
+                    <TableRow sx={{ backgroundColor: "GrayText" }}>
                         <TableCell >Count</TableCell>
                         <TableCell >Amount</TableCell>
                         <TableCell >Price</TableCell>

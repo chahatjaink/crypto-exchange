@@ -4,7 +4,7 @@ import axios from 'axios';
 const fetchOrders = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { token } = req.query;
-        const apiUrl = process.env.API_URL || '';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
         const url = `${apiUrl}/book/t${token}USD/P0?len=25`;
         const response = await axios.get(url);
         const data = response.data;

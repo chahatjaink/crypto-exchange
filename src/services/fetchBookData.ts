@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-export default async function fetchChartData(granularity:string, token:string) {
+export default async function fetchBookData(token: string) {
     try {
-        const response = await axios.get('/api/fetchData',{
+        const response = await axios.get('/api/book', {
             params: {
-                granularity,
                 token
             }
         });
@@ -12,5 +11,6 @@ export default async function fetchChartData(granularity:string, token:string) {
         return data;
     } catch (error) {
         console.error("Error fetching data:", error);
+        throw new Error("Error fetching book data");
     }
 };

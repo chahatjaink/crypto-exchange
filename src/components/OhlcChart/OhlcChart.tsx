@@ -1,10 +1,10 @@
 import { Stack } from "@mui/material";
 import { CrosshairMode, IChartApi, ISeriesApi, LineStyle, OhlcData, createChart } from "lightweight-charts";
 import { useEffect, useRef } from "react";
-import { config } from "../../../configs/ohlcv";
+import { config } from "../../configs/ohlcv.constant";
 import { candleStickOptions, createChartStyles, timescaleOptions } from "@/util/config.styles";
 
-export default function Chart(props: { ohlcvData: OhlcData[] }) {
+export default function OhlcChart(props: { ohlcvData: OhlcData[] }) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

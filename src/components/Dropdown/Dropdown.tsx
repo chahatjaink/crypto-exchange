@@ -1,22 +1,13 @@
 import React from 'react';
-import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { DropdownProps } from '@/interface';
-import { config } from '../../../configs/ohlcv';
+import { Container, Label } from './dropdown.styles';
+
 
 export default function Dropdown(props: DropdownProps) {
-    const granularityOptions = config.granularityOptions;
-
-    const tokenOptions = config.tokenOptions;
-
     return (
-        <Box sx={{
-            minWidth: 120, maxWidth: 150, position: "absolute",
-            left: 10,
-            backgroundColor: "grey",
-            zIndex: 10,
-        }}>
-            <FormControl fullWidth>
-                <InputLabel id={props.id} sx={{ color: "white", fontWeight: "bold", fontSize: 20 }}>{props.type}</InputLabel>
+        <Container>
+            <FormControl sx={{ m: 1, minWidth: 50 }}>
                 <Select
                     labelId={props.id}
                     id={props.id}
@@ -24,22 +15,17 @@ export default function Dropdown(props: DropdownProps) {
                     value={props.value}
                     label={props.id}
                     onChange={props.onChange}
+                    sx={{color:'grey'}}
                 >
                     {
-                        props.type === 'Granularity' ?
-                            (granularityOptions.map((option, optionIndex) => (
-                                <MenuItem key={option + optionIndex} value={option}>
-                                    {option}
-                                </MenuItem>
-                            )))
-                            : (tokenOptions.map((option, optionIndex) => (
-                                <MenuItem key={option + optionIndex} value={option}>
-                                    {option}
-                                </MenuItem>
-                            )))
+                        (props.options.map((option, optionIndex) => (
+                            <MenuItem key={option + optionIndex} value={option} >
+                                {option}
+                            </MenuItem>
+                        )))
                     }
                 </Select>
             </FormControl>
-        </Box >
+        </Container>
     );
 }

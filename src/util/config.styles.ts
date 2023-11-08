@@ -1,11 +1,7 @@
 import { config } from "../configs/ohlcv.constant"
 
 export const dropdownStackStyles = {
-    position: "absolute",
-    backgroundColor: "white",
-    zIndex: 10,
-    marginTop: "20px",
-    left: "380px"
+    flexDirection: 'row'
 }
 
 export const createChartStyles = {

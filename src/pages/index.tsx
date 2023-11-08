@@ -4,7 +4,6 @@ import { dropdownStackStyles } from '@/util/config.styles';
 import { OhlcData } from 'lightweight-charts';
 import Dropdown from '@/components/Dropdown/Dropdown';
 import BasicTable from '@/components/Table/Table';
-import { OrderData } from '@/interface';
 import { config } from '@/configs/ohlcv.constant';
 import OhlcChart from '@/components/OhlcChart/OhlcChart';
 import useOhlcData from '@/util/hooks/ohlcData';
@@ -14,6 +13,8 @@ import ResponsiveAppBar from '@/components/AppBar/AppBar';
 import TimeFrameChips from '@/components/TimeFrameChip/TimeFrameChip';
 import { calculateUnixTimestampForTimeFrame } from '@/util/calculateTimestamp';
 import TickersTable from '@/components/Table/TickerTable';
+import useTickersData from '@/util/hooks/tickersData';
+import { GroupedData, OhlcLabelType, OrderData, Tickers } from '@/interface';
 
 export default function OhlcChartPage() {
     const [granularity, setGranularity] = useState(config.defaultGranularity);
@@ -44,25 +45,25 @@ export default function OhlcChartPage() {
     };
 
     const ohlcvData: OhlcData[] = useOhlcData(granularity, coin, timeFrame);
-    const orderBook = useOrderBook(coin);
+    const orderBook: OrderData | undefined = useOrderBook(coin);
+    const tickersData: GroupedData | undefined = useTickersData(coin);
+    const defaultOhlcLabel: OhlcLabelType = ohlcvData[ohlcvData.length - 1]
 
     return (
-        <Stack sx={{ backgroundColor: config.defaultColor }}>
+        <Stack sx={{ backgroundColor: "black" }}>
             <ResponsiveAppBar />
-            <Stack width='120vw' height='100vh'>
-                <Stack sx={dropdownStackStyles}>
-                    <Dropdown id='granularity' type='Granularity' options={config.granularityOptions} onChange={handleGranularityChange} value={granularity} />
+            <Stack paddingTop={1}>
+                <Stack direction={'row'} gap={1}>
+                    <TickersTable tickers={tickersData} />
+                    <ChartContainer>
+                        <Stack direction={'row'}>
+                            <Dropdown id='granularity' type='Granularity' options={config.granularityOptions} onChange={handleGranularityChange} value={granularity} />
+                            <Dropdown id='coin' type='Token' options={config.coinOptions} onChange={handleTokenChange} value={coin} />
+                        </Stack>
+                        <OhlcChart ohlcvData={ohlcvData} label={defaultOhlcLabel} />
+                        <TimeFrameChips onSelect={handleTimeChange} selectedLabel={timeLabel} />
+                    </ChartContainer>
                 </Stack>
-                <Stack sx={{ ...dropdownStackStyles, left: "480px" }}>
-                    <Dropdown id='coin' type='Token' options={config.coinOptions} onChange={handleTokenChange} value={coin} />
-                </Stack>
-                <Stack sx={{ width: "20%", top: "50%", left: "0px" }}>
-                    <TickersTable />
-                </Stack>
-                <ChartContainer>
-                    <OhlcChart ohlcvData={ohlcvData} />
-                    <TimeFrameChips onSelect={handleTimeChange} selectedLabel={timeLabel} />
-                </ChartContainer>
             </Stack >
             <Stack
                 width='100%'
@@ -70,6 +71,6 @@ export default function OhlcChartPage() {
             >
                 <BasicTable coin={coin} orderBook={orderBook} />
             </Stack>
-        </Stack >
+        </Stack>
     );
 }

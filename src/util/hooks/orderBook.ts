@@ -7,7 +7,6 @@ function useOrderBook(coin: string): OrderData | undefined {
 
     useEffect(() => {
         const wsUrl: string = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "";
-        console.log("TCL: wsUrl", wsUrl)
         const w = new WebSocket(wsUrl);
 
         w.onopen = () => {

@@ -1,4 +1,5 @@
 import { SelectInputProps } from "@mui/material/Select/SelectInput";
+import { Time } from "lightweight-charts";
 
 export type DropdownProps = {
     id: string;
@@ -28,4 +29,35 @@ export enum Order {
 export type timestampGranularity = {
     timestamp: number,
     granularity: string
+}
+
+export type OhlcLabelType = {
+    open: number,
+    high: number,
+    low: number,
+    close: number,
+    time: Time
+}
+
+export type Tickers = {
+    symbol: string,
+    bid: number,
+    bid_size: number,
+    ask: number,
+    ask_size: number,
+    daily_change: number,
+    change24H: number,
+    last_price: number,
+    volume: number,
+    high24H: number,
+    low24H: number
+}
+
+export interface TickerGroupedData {
+    currency: string;
+    ticker: Tickers;
+}
+
+export interface GroupedData {
+    [coin: string]: TickerGroupedData[];
 }

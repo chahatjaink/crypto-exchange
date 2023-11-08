@@ -6,38 +6,40 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { Stack, TableSortLabel } from '@mui/material';
+import { useState } from 'react';
+import { config } from '@/configs/ohlcv.constant';
+import { GroupedData, Tickers } from '@/interface';
 
 interface Column {
-    id: 'NAME' | 'LAST' | '24H' | 'VOL USD' | 'LEVARAGE';
+    id: 'name' | 'last' | '24h' | 'vol_usd' | 'levarage';
     label: string;
     minWidth?: number;
     align?: 'right';
     format?: (value: number) => string;
 }
 
+
 const columns: readonly Column[] = [
-    { id: 'NAME', label: 'Name', minWidth: 170 },
-    { id: 'LAST', label: 'LAST', minWidth: 100 },
+    { id: 'name', label: 'NAME', minWidth: 60 },
+    { id: 'last', label: 'LAST', minWidth: 60 },
     {
-        id: '24H',
+        id: '24h',
         label: '24H',
-        minWidth: 170,
+        minWidth: 60,
         align: 'right',
-        format: (value: number) => value.toLocaleString('en-US'),
     },
     {
-        id: 'VOL USD',
+        id: 'vol_usd',
         label: 'VOL USD',
-        minWidth: 170,
+        minWidth: 60,
         align: 'right',
-        format: (value: number) => value.toLocaleString('en-US'),
     },
     {
-        id: 'LEVARAGE',
+        id: 'levarage',
         label: '',
-        minWidth: 170,
+        minWidth: 60,
         align: 'right',
-        format: (value: number) => value.toFixed(2),
     },
 ];
 
@@ -48,46 +50,87 @@ interface Data {
     vol_usd: number;
     levarage: string;
 }
-export default function TickersTable() {
+
+export default function TickersTable(props: { tickers: GroupedData | undefined }) {
+
+    const [orderBy, setOrderBy] = useState<string>('name');
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+    const coinsArr: Array<string> = props.tickers ? Object.keys(props.tickers) : []
+
+    const handleSort = (columnId: string) => {
+        if (orderBy === columnId) {
+            setOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setOrderBy(columnId);
+            setOrder('asc');
+        }
+    };
     return (
-        <Paper sx={{ width: '100%', overflow: 'scroll' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
+        <div style={{ width: '30%', overflow: 'auto', maxHeight: '600px' }}>
+            <Paper sx={{ width: '100%', borderRadius: 2 }}>
+                <TableContainer>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow sx={{ minWidth: 10 }}>
                                 <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
+                                    key={columns[0].id}
+                                    align={columns[0].align}
+                                    sx={{ minWidth: 10, color: 'white', backgroundColor: config.defaultColor }}
                                 >
-                                    {column.label}
+                                    <TableSortLabel
+                                        direction={order}
+                                        onClick={() => handleSort(columns[0].id)}
+                                    >
+                                        {columns[0].label}
+                                    </TableSortLabel>
                                 </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {/* {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })} */}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Paper>
+                                {columns.slice(1).map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        sx={{ minWidth: 10, color: 'white', backgroundColor: config.defaultColor }}
+                                    >
+                                        <TableSortLabel
+                                            active={orderBy === column.id}
+                                            direction={order}
+                                            onClick={() => handleSort(column.id)}
+                                        >
+                                            {column.label}
+                                        </TableSortLabel>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {coinsArr.map((coin, coinIndex) => {
+                                const tickers = props?.tickers?.[coin] || [];
+                                return (
+                                    <React.Fragment key={coinIndex}>
+                                        <TableRow>
+                                            <TableCell>{coin}</TableCell>
+                                            <TableCell>{tickers[0].ticker.last_price} {tickers[0].currency}</TableCell>
+                                            <TableCell>{tickers[0].ticker.change24H}</TableCell>
+                                            <TableCell>{tickers[0].ticker.volume}</TableCell>
+                                        </TableRow>
+                                        {tickers.slice(1).map((ticker, tickerIndex) => {
+                                            // console.log("TCL: TickersTable -> ticker", ticker)
+                                            return (
+                                                <TableRow key={tickerIndex}>
+                                                    <TableCell></TableCell>
+                                                    <TableCell>{ticker.ticker.last_price} {ticker.currency}</TableCell>
+                                                    <TableCell>{ticker.ticker.change24H}</TableCell>
+                                                    <TableCell>{ticker.ticker.volume}</TableCell>
+                                                </TableRow>)
+                                        }
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </div>
     );
 }
+

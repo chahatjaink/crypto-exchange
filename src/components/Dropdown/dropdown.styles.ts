@@ -3,7 +3,7 @@ import { Box, InputLabel } from '@mui/material';
 import { config } from '@/configs/ohlcv.constant';
 
 export const Container = styled(Box)({
-    position: "absolute",
+    // position: "absolute",
     zIndex: 10,
 })
 

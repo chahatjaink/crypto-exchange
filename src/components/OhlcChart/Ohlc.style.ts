@@ -1,4 +1,5 @@
-import { config } from "../configs/ohlcv.constant"
+import { config } from "@/configs/ohlcv.constant"
+import { CrosshairMode, DeepPartial, LineStyle, LineWidth } from "lightweight-charts"
 
 export const dropdownStackStyles = {
     flexDirection: 'row'
@@ -23,6 +24,30 @@ export const timescaleOptions = {
     fixRightEdge: true,
     rightBarStaysOnScroll: true
 }
+
+export const crossHairOptions = {
+    crosshair: {
+        mode: CrosshairMode.Magnet,
+        vertLine: {
+            width: 2 as unknown as DeepPartial<LineWidth>,
+            color: '#C3BCDB44',
+            style: LineStyle.Solid,
+            labelBackgroundColor: config.crossHairColor,
+        },
+        horzLine: {
+            color: config.crossHairColor,
+            labelBackgroundColor: config.crossHairColor,
+        },
+    },
+}
+
+export const priceFormatOptions = {
+    type: 'price' as const,
+    precision: 0,
+    minMove: 1,
+}
+
+
 
 export const candleStickOptions = {
     wickUpColor: config.upColor,

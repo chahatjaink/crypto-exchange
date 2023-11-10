@@ -1,8 +1,9 @@
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { config } from '@/configs/ohlcv.constant';
+import { MouseEventHandler } from 'react';
 
-export default function TimeFrameChips(props: { onSelect: any, selectedLabel: string | null }) {
+export default function TimeFrameChips(props: { onSelect: (label:string)=>void, selectedLabel: string | null }) {
     return (
         <Stack direction="row" gap={1}>
             {config.timeFrameOptions.map((label, labeIndex) =>

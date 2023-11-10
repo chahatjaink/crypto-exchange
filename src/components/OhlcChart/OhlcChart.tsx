@@ -1,8 +1,7 @@
 import { Stack } from "@mui/material";
-import { CrosshairMode, IChartApi, ISeriesApi, LineStyle, OhlcData, createChart } from "lightweight-charts";
+import { IChartApi, ISeriesApi, OhlcData, createChart } from "lightweight-charts";
 import { useEffect, useRef, useState } from "react";
-import { config } from "../../configs/ohlcv.constant";
-import { candleStickOptions, createChartStyles, timescaleOptions } from "@/util/config.styles";
+import { candleStickOptions, createChartStyles, crossHairOptions, priceFormatOptions, timescaleOptions } from "./Ohlc.style";
 import { OhlcLabelType } from "@/interface";
 import OhlcLabel from "../OhlcLabel/OhlcLabel";
 
@@ -17,21 +16,7 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
     useEffect(() => {
         if (chartContainerRef.current) {
             const chart: IChartApi = createChart(chartContainerRef.current, createChartStyles);
-            chart.applyOptions({
-                crosshair: {
-                    mode: CrosshairMode.Magnet,
-                    vertLine: {
-                        width: 2,
-                        color: '#C3BCDB44',
-                        style: LineStyle.Solid,
-                        labelBackgroundColor: config.crossHairColor,
-                    },
-                    horzLine: {
-                        color: config.crossHairColor,
-                        labelBackgroundColor: config.crossHairColor,
-                    },
-                },
-            })
+            chart.applyOptions(crossHairOptions)
             chart.subscribeCrosshairMove((param) => {
                 const ohlcData = param?.seriesData?.entries().next().value;
                 if (ohlcData)
@@ -43,18 +28,12 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
             chart.timeScale().applyOptions(timescaleOptions);
             const candlestickSeries: ISeriesApi<"Candlestick"> = chart.addCandlestickSeries();
             candlestickSeries.setData(props.ohlcvData);
-            candlestickSeries.applyOptions(
-                {
-                    priceFormat: {
-                        type: 'price',
-                        precision: 0,
-                        minMove: 1,
-                    },
-                    title:props.coin.substring(1),
-                
-                })
+            candlestickSeries.applyOptions({
+                priceFormat: priceFormatOptions,
+                title: props.coin.substring(1),
+            })
             candlestickSeries.applyOptions(candleStickOptions);
- 
+
             chart.timeScale().fitContent()
             candlestickSeries.priceScale().applyOptions({
                 scaleMargins: {

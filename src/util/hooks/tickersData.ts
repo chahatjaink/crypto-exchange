@@ -23,8 +23,8 @@ function useTickersData(coin: string) {
         const fetchTickers = async () => {
             const tickerData = await fetchTickersData();
             const tickers: Array<Tickers> = tickerData.map((tickerRow: Array<number | string>) => {
-                const volume:number= Number(tickerRow[TickerProperty.VOLUME]) * Number(tickerRow[TickerProperty.LAST_PRICE])
-                const change24H: number=Number((Number(tickerRow[TickerProperty.DAILY_CHANGE_RELATIVE])*100).toFixed(2))
+                const volume: number = Number(tickerRow[TickerProperty.VOLUME]) * Number(tickerRow[TickerProperty.LAST_PRICE])
+                const change24H: number | string = Number((Number(tickerRow[TickerProperty.DAILY_CHANGE_RELATIVE]) * 100).toFixed(2)).toFixed(2)
                 return {
                     symbol: tickerRow[TickerProperty.SYMBOL],
                     bid: tickerRow[TickerProperty.BID],
@@ -33,8 +33,8 @@ function useTickersData(coin: string) {
                     ask_size: tickerRow[TickerProperty.ASK_SIZE],
                     daily_change: tickerRow[TickerProperty.DAILY_CHANGE],
                     change24H,
-                    last_price: tickerRow[TickerProperty.LAST_PRICE],
-                    volume,
+                    last_price: tickerRow[TickerProperty.LAST_PRICE].toLocaleString(),
+                    volume: Math.round(volume).toLocaleString(),
                     high24H: tickerRow[TickerProperty.HIGH],
                     low24H: tickerRow[TickerProperty.LOW],
                 }
@@ -49,9 +49,8 @@ function useTickersData(coin: string) {
                 if (!tickerGroupedData[coin]) {
                     tickerGroupedData[coin] = [];
                 }
-                tickerGroupedData[coin].push({ currency, ticker }); 
+                tickerGroupedData[coin].push({ currency, ticker });
             });
-			console.log("TCL: fetchTickers -> tickerGroupedData", tickerGroupedData)
             setTickers(tickerGroupedData);
         };
 

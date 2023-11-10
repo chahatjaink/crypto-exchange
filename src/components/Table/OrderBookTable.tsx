@@ -5,49 +5,37 @@ import { Stack } from '@mui/material';
 import OrderTable from './OrderTable';
 import fetchBookData from '@/services/fetchBookData';
 import { formatOrderBookData } from '@/util/formatOrderBookData';
+import useOrderBook from '@/util/hooks/orderBook';
+import { setOrderData } from '@/util/setOrderData';
 
-//OrderBookTable component
-export default function BasicTable(props: { orderBook: OrderData | undefined, coin: string }) {
+export default function OrderBookTable(props: { coin: string }) {
     const [bidData, setBidData] = useState<Array<OrderData>>([]);
     const [askData, setAskData] = useState<Array<OrderData>>([]);
     const [count, setCount] = useState(0);
+    const orderBook: OrderData | undefined = useOrderBook(props.coin);
 
-    //util 
-    function setOrderData(order: OrderData) {
-        setCount(prevCount => prevCount + 1)
-        if (order?.amount > 0 && order?.amount != 1) {
-            setBidData((prevData) => {
-                if (prevData.length > 20) prevData.splice(count % 20, 1)
-                return [...prevData, order];
-            });
-        } else if (order?.amount < 0 && order?.amount != -1) {
-            setAskData(prevData => {
-                if (prevData.length > 20) prevData.splice(count % 20, 1)
-                return [...prevData, order];
-            });
-        }
-    }
-    //arrow function everywhere
     useEffect(() => {
         const fetchOrders = async () => {
             const orders: Array<Array<number>> = await fetchBookData(props.coin);
             const orderDataArr: Array<OrderData> = orders.map(order => formatOrderBookData(order))
-            orderDataArr.forEach(orderData => setOrderData(orderData))
+            orderDataArr.forEach(orderData =>
+                setOrderData(orderData, count, setBidData, setAskData, setCount)
+            )
         }
         fetchOrders();
     }, [props.coin])
 
     useEffect(() => {
-        if (props?.orderBook)
-            setOrderData(props.orderBook)
-    }, [props.orderBook])
+        if (orderBook)
+            setOrderData(orderBook, count, setBidData, setAskData, setCount)
+    }, [orderBook])
 
     return (
         <Stack sx={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-            <Stack >
+            <Stack sx={{ display: 'block' }}>
                 <OrderTable orderData={bidData} count={count} />
             </Stack>
-            <Stack >
+            <Stack sx={{ display: 'inline-block' }}>
                 <OrderTable orderData={askData} count={count} />
             </Stack>
         </Stack>

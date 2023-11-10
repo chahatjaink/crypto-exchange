@@ -10,23 +10,29 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { config } from '@/configs/ohlcv.constant';
+import { useRouter } from 'next/router';
 
 
 const pages = ['Trading', 'Derivaties', 'Funding'];
 
-function ResponsiveAppBar() {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+function ResponsiveAppBar(props: { coin: string }) {
+    const router = useRouter()
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
+    const handleBook = () => {
+        router.push({
+            pathname: '/order-book',
+            query: {
+                coin: props.coin,
+            },
+        })
+    }
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+    const handleHome = () => {
+        router.push('/')
+    }
 
     return (
-        <AppBar position="static" sx={{backgroundColor:config.defaultColor}}>
+        <AppBar position="static" sx={{ backgroundColor: config.defaultColor }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Typography
@@ -43,6 +49,7 @@ function ResponsiveAppBar() {
                             color: 'inherit',
                             textDecoration: 'none',
                         }}
+                        onClick={handleHome}
                     >
                         BITFINEX
                     </Typography>
@@ -51,12 +58,17 @@ function ResponsiveAppBar() {
                         {pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}
                             </Button>
                         ))}
+                        <Button
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            onClick={handleBook}
+                        >
+                            BOOK
+                        </Button>
                     </Box>
                 </Toolbar>
             </Container>

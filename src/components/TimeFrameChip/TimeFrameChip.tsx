@@ -10,6 +10,10 @@ export default function TimeFrameChips(props: { onSelect: any, selectedLabel: st
                     key={labeIndex + label} label={label} onClick={() => props.onSelect(label)}
                     color={props.selectedLabel === label ? 'primary' : 'default'} />
             )}
+            <p style={{position:'absolute', color: 'grey', right:20, fontSize:'14px'}}>
+                X-Axis: Time<br/>
+                Y-Axis: Price
+            </p>
         </Stack>
     );
 }

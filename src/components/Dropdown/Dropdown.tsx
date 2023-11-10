@@ -1,7 +1,7 @@
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, Select, MenuItem } from '@mui/material';
 import { DropdownProps } from '@/interface';
-import { Container, Label } from './dropdown.styles';
+import { Container } from './styles/dropdown.styles';
 
 
 export default function Dropdown(props: DropdownProps) {

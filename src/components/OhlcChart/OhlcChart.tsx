@@ -6,13 +6,13 @@ import { candleStickOptions, createChartStyles, timescaleOptions } from "@/util/
 import { OhlcLabelType } from "@/interface";
 import OhlcLabel from "../OhlcLabel/OhlcLabel";
 
-export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType }) {
+export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType, coin: string }) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [ohlcLabel, setOhlcLabel] = useState<OhlcLabelType>(props.label)
 
-    useEffect(()=>{
+    useEffect(() => {
         setOhlcLabel(props.label)
-    },[props.label])
+    }, [props.label])
 
     useEffect(() => {
         if (chartContainerRef.current) {
@@ -39,10 +39,23 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
                 else
                     setOhlcLabel(props.label)
             });
+
             chart.timeScale().applyOptions(timescaleOptions);
             const candlestickSeries: ISeriesApi<"Candlestick"> = chart.addCandlestickSeries();
             candlestickSeries.setData(props.ohlcvData);
+            candlestickSeries.applyOptions(
+                {
+                    priceFormat: {
+                        type: 'price',
+                        precision: 0,
+                        minMove: 1,
+                    },
+                    title:props.coin.substring(1),
+                
+                })
             candlestickSeries.applyOptions(candleStickOptions);
+ 
+            chart.timeScale().fitContent()
             candlestickSeries.priceScale().applyOptions({
                 scaleMargins: {
                     top: 0.1,
@@ -58,7 +71,7 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
 
     return (
         <>
-            {ohlcLabel && <OhlcLabel label={ohlcLabel} />}
+            {ohlcLabel && <OhlcLabel label={ohlcLabel} coin={props.coin} />}
             <Stack ref={chartContainerRef} sx={{ cursor: 'crosshair' }} />
         </>
     )

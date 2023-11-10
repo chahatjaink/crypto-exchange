@@ -5,7 +5,7 @@ export const dropdownStackStyles = {
 }
 
 export const createChartStyles = {
-    width: 1350, height: 750, layout: {
+    width: 1350, height: 680, layout: {
         background: { color: '#222' },
         textColor: '#DDD',
     },
@@ -19,7 +19,7 @@ export const timescaleOptions = {
     ticksVisible: true,
     timeVisible: true,
     borderColor: '#71649C',
-    barSpacing: 10,
+    barSpacing: 5,
     fixRightEdge: true,
     rightBarStaysOnScroll: true
 }

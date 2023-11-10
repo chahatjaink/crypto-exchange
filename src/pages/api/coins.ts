@@ -1,13 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 
-const fetchCandles = async (req: NextApiRequest, res: NextApiResponse) => {
+//naming convention:
+const fetchCoins = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const { granularity, token, startTime } = req.query;
-        const updatedToken = token?.at(0) == 't' ? token : `t${token}`;
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const startQuery = startTime ? `hist?start=${startTime}` : `hist`
-        const url = `${apiUrl}/candles/trade%3A${granularity}%3A${updatedToken}/${startQuery}`;
+        const url = `${apiUrl}/conf/pub:list:pair:exchange`;
         const response = await axios.get(url);
         const data = response.data;
         res.status(200).json(data);
@@ -17,5 +15,5 @@ const fetchCandles = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 };
 
-export default fetchCandles;
+export default fetchCoins;
 

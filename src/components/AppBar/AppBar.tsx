@@ -2,15 +2,11 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import { config } from '@/configs/ohlcv.constant';
 import { useRouter } from 'next/router';
+import { StyledAppBar, StyledButton, boxStyles, typographyStyles } from './styles/AppBar.styles';
 
 
 const pages = ['Trading', 'Derivaties', 'Funding'];
@@ -32,7 +28,7 @@ function ResponsiveAppBar(props: { coin: string }) {
     }
 
     return (
-        <AppBar position="static" sx={{ backgroundColor: config.defaultColor }}>
+        <StyledAppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Typography
@@ -40,39 +36,29 @@ function ResponsiveAppBar(props: { coin: string }) {
                         noWrap
                         component="a"
                         href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
+                        sx={typographyStyles}
                         onClick={handleHome}
                     >
                         BITFINEX
                     </Typography>
 
-                    <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={boxStyles}>
                         {pages.map((page) => (
-                            <Button
+                            <StyledButton
                                 key={page}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}
-                            </Button>
+                            </StyledButton>
                         ))}
-                        <Button
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        <StyledButton
                             onClick={handleBook}
                         >
                             BOOK
-                        </Button>
+                        </StyledButton>
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </StyledAppBar>
     );
 }
 export default ResponsiveAppBar;

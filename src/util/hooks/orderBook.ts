@@ -14,7 +14,7 @@ function useOrderBook(coin: string): OrderData | undefined {
                 JSON.stringify({
                     event: 'subscribe',
                     channel: 'book',
-                    symbol: `t${coin}USD`,
+                    symbol: `${coin}`,
                 })
             );
 

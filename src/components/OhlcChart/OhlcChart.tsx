@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { candleStickOptions, createChartStyles, crossHairOptions, priceFormatOptions, timescaleOptions } from "./Ohlc.style";
 import { OhlcLabelType } from "@/interface";
 import OhlcLabel from "../OhlcLabel/OhlcLabel";
+import { useSelector } from "react-redux";
 
-export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType, coin: string }) {
+export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType}) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [ohlcLabel, setOhlcLabel] = useState<OhlcLabelType>(props.label)
+    const coin = useSelector((state: any) => state.coin.coin)
 
     useEffect(() => {
         setOhlcLabel(props.label)
@@ -30,7 +32,7 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
             candlestickSeries.setData(props.ohlcvData);
             candlestickSeries.applyOptions({
                 priceFormat: priceFormatOptions,
-                title: props.coin.substring(1),
+                title: coin.substring(1),
             })
             candlestickSeries.applyOptions(candleStickOptions);
 
@@ -50,7 +52,7 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
 
     return (
         <>
-            {ohlcLabel && <OhlcLabel label={ohlcLabel} coin={props.coin} />}
+            {ohlcLabel && <OhlcLabel label={ohlcLabel}/>}
             <Stack ref={chartContainerRef} sx={{ cursor: 'crosshair' }} />
         </>
     )

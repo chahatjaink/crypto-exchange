@@ -1,24 +1,24 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { config } from '@/configs/ohlcv.constant';
 import { useRouter } from 'next/router';
 import { StyledAppBar, StyledButton, boxStyles, typographyStyles } from './styles/AppBar.styles';
+import { useSelector } from 'react-redux';
 
 
 const pages = ['Trading', 'Derivaties', 'Funding'];
 
-function ResponsiveAppBar(props: { coin: string }) {
+function Header() {
     const router = useRouter()
+    const coin= useSelector((state: any) => state.coin.coin)
 
     const handleBook = () => {
         router.push({
             pathname: '/order-book',
             query: {
-                coin: props.coin,
+                coin,
             },
         })
     }
@@ -61,4 +61,4 @@ function ResponsiveAppBar(props: { coin: string }) {
         </StyledAppBar>
     );
 }
-export default ResponsiveAppBar;
+export default Header;

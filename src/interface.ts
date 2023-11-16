@@ -9,7 +9,7 @@ export type DropdownProps = {
     onChange: SelectInputProps<any>['onChange'];
 };
 
-export type BitfinexResponse = [number, Array<number>]; //format and save change naming
+export type BitfinexResponse = [number, Array<number>]; 
 export type OrderData = {
     price: number,
     count: number,
@@ -60,4 +60,8 @@ export interface TickerGroupedData {
 
 export interface GroupedData {
     [coin: string]: TickerGroupedData[];
+}
+
+export interface coinInitialState {
+    coin: string;
 }

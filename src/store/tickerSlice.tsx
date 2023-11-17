@@ -1,24 +1,18 @@
-import { config } from '@/configs/ohlcv.constant';
-import { GroupedData } from '@/interface';
-import fetchTickersData from '@/services/fetchTickersData';
-import formatTickersData from '@/util/formatTickersData';
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { GroupedData } from "@/interface";
+import { createSlice } from "@reduxjs/toolkit";
 
-// const initialState = {
-//     currency: 'USD';
-//     ticker: {
+const initialState: GroupedData = {};
 
-//     };
-// } 
+const tickersSlice = createSlice({
+  name: "tickers",
+  initialState,
+  reducers: {
+    setTickers: (state, action) => {
+      state = action.payload;
+    },
+  },
+});
 
+export const tickersActions = tickersSlice.actions;
 
-export const getTickersData = (ticker: any) => {
-    return async (dispatch:any) =>{
-        const fetchTickers = async () => {
-            const tickerData = await fetchTickersData();
-            const tickerGroupedData: GroupedData = formatTickersData(tickerData);
-            
-        };
-
-    }
-}
+export default tickersSlice.reducer;

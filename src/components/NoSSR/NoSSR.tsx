@@ -5,11 +5,11 @@ import { StyledDiv } from './styles/NoSSR.styles';
 
 const NoSSR = dynamic(() => import('../Table/TickerTable'), { ssr: false })
 
-export default function Tickers(props: { tickers: GroupedData | undefined, onClick: (symbol: string) => void, isLoading: Boolean }) {
+export default function Tickers(props: { tickers: GroupedData | undefined, onClick: (symbol: string) => void }) {
 
     return (
         <StyledDiv>
-            <NoSSR tickers={props.tickers} onClick={props.onClick} isLoading={props.isLoading}  />
+            <NoSSR tickers={props.tickers} onClick={props.onClick} />
         </StyledDiv>
     )
 }

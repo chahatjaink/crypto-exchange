@@ -31,7 +31,7 @@ export function setOrderData(
       order.total = Number(
         getTotalValueAtPrice(order.total, order.price, prevData).toFixed(2)
       );
-      if (prevData.length > 35) prevData.splice(count % 35, 1);
+      if (prevData.length > 30) prevData.splice(count % 30, 1);
       return [...prevData, order];
     });
   } else if (order?.amount < 0 && order?.amount !== -1) {
@@ -39,7 +39,7 @@ export function setOrderData(
       order.total = Number(
         getTotalValueAtPrice(order.total,order.price, prevData).toFixed(2)
       );
-      if (prevData.length > 35) prevData.splice(count % 35, 1);
+      if (prevData.length > 30) prevData.splice(count % 30, 1);
       return [...prevData, order];
     });
   }

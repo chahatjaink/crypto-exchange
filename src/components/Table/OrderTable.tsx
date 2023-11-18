@@ -17,17 +17,19 @@ export default function OrderTable(props: {
   type: string;
 }) {
   const columns = [
-    { name: "Count" },
-    { name: "Amount" },
-    { name: "Total" },
-    { name: "Price" },
+    { name: "count" },
+    { name: "amount" },
+    { name: "total" },
+    { name: "price" },
   ];
+
   const reversedColumns = [
-    { name: "Price" },
-    { name: "Total" },
-    { name: "Amount" },
-    { name: "Count" },
+    { name: "price" },
+    { name: "total" },
+    { name: "amount" },
+    { name: "count" },
   ];
+
   return (
     <TableContainer
       component={Paper}
@@ -43,30 +45,41 @@ export default function OrderTable(props: {
         sx={{ minWidth: 500, borderCollapse: "collapse" }}
         aria-label="caption table"
       >
-        <caption>Order Book</caption>
+        <caption style={{color:"GrayText"}}>Order Book</caption>
         <TableHead>
           <TableRow sx={{ color: "GrayText" }}>
             {props.type === "bid"
               ? columns.map((column) => (
-                  <TableCell sx={{ color: "GrayText" }} key={column.name}>{column.name}</TableCell>
+                  <TableCell sx={{ color: "GrayText" }} key={column.name}>
+                    {column.name.charAt(0).toUpperCase() + column.name.slice(1)}
+                  </TableCell>
                 ))
-              : reversedColumns.map((column) => (     
-                  <TableCell sx={{ color: "GrayText" }} key={column.name}>{column.name}</TableCell>
+                : reversedColumns.map((column) => (
+                  <TableCell sx={{ color: "GrayText" }} key={column.name}>
+                    {column.name.charAt(0).toUpperCase() + column.name.slice(1)}
+                  </TableCell>
                 ))}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {props.orderData.length > 0
-            ? props.orderData.map((row: OrderData, index: number) => (
-                <TableRow key={index} >
-                  <StyledTableCell sx={{ color: "white" }} key={`count${index}`}>{row.count}</StyledTableCell>
-                  <StyledTableCell key={`amount${index}`}>{row.amount}</StyledTableCell>
-                  <StyledTableCell key={`total${index}`}>{row.total}</StyledTableCell>
-                  <StyledTableCell key={`price${index}`}>{row.price}</StyledTableCell>
+        {props.orderData.length > 0
+          ? props.orderData.map((row: any, index: number) => (
+              <TableBody>
+                <TableRow key={index}>
+                  {props.type === "bid"
+                    ? columns.map((column) => (
+                        <StyledTableCell key={`${column.name}${index}`}>
+                          {row[column.name as keyof typeof row]}
+                        </StyledTableCell>
+                      ))
+                    : reversedColumns.map((column) => (
+                        <StyledTableCell key={`${column.name}${index}`}>
+                          {row[column.name as keyof typeof row]}
+                        </StyledTableCell>
+                      ))}
                 </TableRow>
-              ))
-            : null}
-        </TableBody>
+              </TableBody>
+            ))
+          : null}
       </Table>
     </TableContainer>
   );

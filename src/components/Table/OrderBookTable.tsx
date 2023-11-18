@@ -35,8 +35,10 @@ export default function OrderBookTable(props: { coin: string }) {
     <Stack
       sx={{
         flexDirection: "row",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         margin: "auto",
+        marginRight: 18,
+        marginLeft: 18,
       }}
     >
       <Stack sx={{ margin: "auto", paddingRight: 1 }}>

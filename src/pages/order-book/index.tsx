@@ -1,29 +1,29 @@
-import { Stack } from "@mui/material";
-import { useRouter } from "next/router";
+import { MainStack, TickerChartContainer } from "@/util/ohlc.styles";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { AppDispatch, useAppDispatch } from "@/store";
+import { getTickersData } from "@/store/ticker-actions";
 import OrderBookTable from "@/components/Table/OrderBookTable";
 import Header from "@/components/Header/Header";
 import Tickers from "@/components/NoSSR/NoSSR";
-import { useDispatch, useSelector } from "react-redux";
-import { coinActions } from "@/store/coinSlice";
-import { TickersState } from "@/interface";
+import { CoinState, TickersState } from "@/interface";
 
 export default function OrderBookPage() {
-  const router = useRouter();
-  const { query } = router;
-  const coin: string = query.coin as string;
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
+  const coin = useSelector((state: CoinState) => state.coin.coin);
+  const tickers = useSelector((state: TickersState) => state.tickers);
 
-  const tickers = useSelector((state: TickersState) => state.tickers.tickers);
-
-  const handleTokenFromTicker = (symbol: string) => {
-    dispatch(coinActions.setCoin(symbol));
-  };
+  useEffect(() => {
+    dispatch(getTickersData());
+  }, [dispatch]);
 
   return (
-    <Stack>
+    <MainStack>
       <Header />
-      <Tickers tickers={tickers} onClick={handleTokenFromTicker}/>
-      <OrderBookTable coin={coin} />
-    </Stack>
+      <TickerChartContainer>
+        <Tickers tickers={tickers} />
+        <OrderBookTable coin={coin} />
+      </TickerChartContainer>
+    </MainStack>
   );
 }

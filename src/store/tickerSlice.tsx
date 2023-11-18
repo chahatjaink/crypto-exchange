@@ -9,6 +9,7 @@ const tickersSlice = createSlice({
   reducers: {
     setTickers: (state, action) => {
       state = action.payload;
+      return state
     },
   },
 });

@@ -1,36 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SelectChangeEvent, Stack } from "@mui/material";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import { config } from "@/configs/ohlcv.constant";
 import OhlcChart from "@/components/OhlcChart/OhlcChart";
 import useOhlcData from "@/util/hooks/ohlcData";
-import {
-  ChartContainer,
-  MainStack,
-  TickerChartContainer,
-} from "@/util/ohlc.styles";
+import { ChartContainer, TickerChartContainer } from "@/util/ohlc.styles";
 import TimeFrameChips from "@/components/TimeFrameChip/TimeFrameChip";
 import { calculateUnixTimestampForTimeFrame } from "@/util/calculateTimestamp";
-import useTickersData from "@/util/hooks/tickersData";
-import { OhlcLabelType } from "@/interface";
+import { GroupedData, OhlcLabelType, TickersState } from "@/interface";
 import Tickers from "@/components/NoSSR/NoSSR";
-import { useDispatch, useSelector } from "react-redux";
-import { coinActions } from "@/store/coinSlice";
+import { useSelector } from "react-redux";
+import { AppDispatch, useAppDispatch } from "@/store";
+import { getTickersData } from "@/store/ticker-actions";
 
 export default function MainComponent() {
   const [granularity, setGranularity] = useState(config.defaultGranularity);
-  const coin = useSelector((state: any) => state.coin.coin);
-  const dispatch = useDispatch();
   const [timeFrame, setTimeFrame] = useState<number | null>(null);
   const [timeLabel, setTimeLabel] = useState<string | null>(null);
+  const dispatch: AppDispatch = useAppDispatch();
+  const tickers = useSelector((state: TickersState) => state.tickers);
+  const coin = useSelector((state: any) => state.coin.coin);
 
   const handleGranularityChange = (event: SelectChangeEvent) => {
     setGranularity(event.target.value);
   };
 
-  const handleTokenFromTicker = (symbol: string) => {
-    dispatch(coinActions.setCoin(symbol));
-  };
+  useEffect(() => {
+    dispatch(getTickersData());
+  }, [dispatch]);
 
   const handleTimeChange = (label: string) => {
     setTimeLabel(label);
@@ -43,12 +40,11 @@ export default function MainComponent() {
   };
 
   const { ohlcvData } = useOhlcData(granularity, coin, timeFrame);
-  const { tickers } = useTickersData();
   const defaultOhlcLabel: OhlcLabelType = ohlcvData[ohlcvData.length - 1];
 
   return (
     <TickerChartContainer>
-      <Tickers tickers={tickers} onClick={handleTokenFromTicker} />
+      <Tickers tickers={tickers} />
       <ChartContainer>
         <Stack direction={"row"}>
           <Dropdown
@@ -59,7 +55,7 @@ export default function MainComponent() {
             value={granularity}
           />
         </Stack>
-        <OhlcChart ohlcvData={ohlcvData} label={defaultOhlcLabel} />
+        <OhlcChart ohlcvData={ohlcvData} label={defaultOhlcLabel} coin={coin} />
         <TimeFrameChips onSelect={handleTimeChange} selectedLabel={timeLabel} />
       </ChartContainer>
     </TickerChartContainer>

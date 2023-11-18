@@ -14,6 +14,7 @@ export type OrderData = {
   price: number;
   count: number;
   amount: number;
+  total: number;
 };
 
 export enum OrderDataIndex {
@@ -59,9 +60,10 @@ export interface TickerGroupedData {
 }
 
 export interface TickersState {
-  tickers: {
-    tickers: GroupedData;
-  };
+  tickers: GroupedData;
+}
+export interface CoinState {
+  coin: { coin: string };
 }
 
 export interface GroupedData {

@@ -6,10 +6,9 @@ import { OhlcLabelType } from "@/interface";
 import OhlcLabel from "../OhlcLabel/OhlcLabel";
 import { useSelector } from "react-redux";
 
-export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType}) {
+export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLabelType, coin: string }) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [ohlcLabel, setOhlcLabel] = useState<OhlcLabelType>(props.label)
-    const coin = useSelector((state: any) => state.coin.coin)
 
     useEffect(() => {
         setOhlcLabel(props.label)
@@ -32,7 +31,7 @@ export default function OhlcChart(props: { ohlcvData: OhlcData[], label: OhlcLab
             candlestickSeries.setData(props.ohlcvData);
             candlestickSeries.applyOptions({
                 priceFormat: priceFormatOptions,
-                title: coin.substring(1),
+                title: props.coin.substring(1),
             })
             candlestickSeries.applyOptions(candleStickOptions);
 

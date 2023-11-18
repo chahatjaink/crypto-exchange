@@ -8,6 +8,8 @@ import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { config } from "@/configs/ohlcv.constant";
 import { GroupedData, TickerGroupedData, Tickers } from "@/interface";
 import { StyledTableCell, StyledTableRow } from "./styles/TickerTable.styles";
+import { useDispatch } from "react-redux";
+import { coinActions } from "@/store/coinSlice";
 
 interface Column {
   id: "name" | "last" | "24h" | "vol_usd";
@@ -34,10 +36,10 @@ const columns: readonly Column[] = [
 
 export default function TickersTable(props: {
   tickers: GroupedData | undefined;
-  onClick: (symbol: string) => void;
 }) {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<"asc" | "desc">("asc"); //enum
+  const dispatch = useDispatch();
 
   const coinsArr: Array<string> = props.tickers
     ? Object.keys(props.tickers)
@@ -47,6 +49,10 @@ export default function TickersTable(props: {
     const isAsc = orderBy === columnId && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
+  };
+
+  const handleTokenFromTicker = (symbol: string) => {
+    dispatch(coinActions.setCoin(symbol));
   };
 
   const sortedCoins = useMemo(() => {
@@ -98,7 +104,7 @@ export default function TickersTable(props: {
             return (
               <StyledTableRow
                 key={index}
-                onClick={() => props.onClick(ticker.ticker.symbol)}
+                onClick={() => handleTokenFromTicker(ticker.ticker.symbol)}
               >
                 <StyledTableCell>{index === 0 ? coin : ""}</StyledTableCell>
                 <StyledTableCell>

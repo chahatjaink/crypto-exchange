@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const fetchOrders = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const { token } = req.query;
+        const { coin } = req.query;
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const url = `${apiUrl}/book/${token}/P0?len=25`;
+        const url = `${apiUrl}/book/${coin}/P0?len=25`;
         const response = await axios.get(url);
         const data = response.data;
         res.status(200).json(data);

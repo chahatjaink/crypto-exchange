@@ -1,5 +1,5 @@
 import { config } from "@/configs/ohlcv.constant"
-import { AppBar, Box, Button } from "@mui/material"
+import { AppBar,  Button } from "@mui/material"
 import { styled } from "@mui/system"
 
 export const StyledAppBar = styled(AppBar)(

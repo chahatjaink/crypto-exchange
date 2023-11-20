@@ -1,13 +1,19 @@
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { useRouter } from 'next/router';
-import { StyledAppBar, StyledButton, boxStyles, typographyStyles } from './styles/AppBar.styles';
+import React from "react";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { useRouter } from "next/router";
+import {
+  StyledAppBar,
+  StyledButton,
+  boxStyles,
+  typographyStyles,
+} from "./styles/AppBar.styles";
 
-const pages = ['Trading', 'Derivaties', 'Funding'];
+const pages = ["Trading", "Derivaties", "Funding"];
 
-function Header() {
+const Header = () => {
   const router = useRouter();
   const handleBook = () => {
     router.push({
@@ -44,5 +50,5 @@ function Header() {
       </Container>
     </StyledAppBar>
   );
-}
+};
 export default Header;

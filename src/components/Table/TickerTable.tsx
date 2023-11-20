@@ -1,15 +1,20 @@
+/* eslint-disable no-unused-vars */
+import React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { TableSortLabel } from "@mui/material";
-import { MouseEventHandler, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { config } from "@/configs/ohlcv.constant";
-import { GroupedData, TickerGroupedData, Tickers } from "@/interface";
+import { TickerGroupedData, Tickers, TickersState } from "@/interface";
 import { StyledTableCell, StyledTableRow } from "./styles/TickerTable.styles";
 import { useDispatch } from "react-redux";
 import { coinActions } from "@/store/coinSlice";
+import { useSelector } from "react-redux";
+import { getTickersData } from "@/store/ticker-actions";
+import { AppDispatch } from "@/store";
 
 interface Column {
   id: "name" | "last" | "24h" | "vol_usd";
@@ -17,6 +22,11 @@ interface Column {
   minWidth?: number;
   align?: "right";
   format?: (value: number) => string;
+}
+
+enum Order {
+  Ascending = "asc",
+  Descending = "desc",
 }
 
 const columns: readonly Column[] = [
@@ -34,20 +44,19 @@ const columns: readonly Column[] = [
   },
 ];
 
-export default function TickersTable(props: {
-  tickers: GroupedData | undefined;
-}) {
+export default function TickersTable() {
   const [orderBy, setOrderBy] = useState<string>("");
-  const [order, setOrder] = useState<"asc" | "desc">("asc"); //enum
-  const dispatch = useDispatch();
+  const [order, setOrder] = useState<Order>(Order.Ascending);
+  const dispatch: AppDispatch = useDispatch();
+  const tickers = useSelector((state: TickersState) => state.tickers);
 
-  const coinsArr: Array<string> = props.tickers
-    ? Object.keys(props.tickers)
-    : [];
+  useEffect(() => {
+    dispatch(getTickersData());
+  }, [dispatch]);
 
   const handleSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    setOrder(isAsc ? Order.Descending : Order.Ascending);
     setOrderBy(columnId);
   };
 
@@ -56,12 +65,15 @@ export default function TickersTable(props: {
   };
 
   const sortedCoins = useMemo(() => {
+    const coinsArr: Array<string> = tickers ? Object.keys(tickers) : [];
     const sortedArr = [...coinsArr];
 
     switch (orderBy) {
       case "name":
         sortedArr.sort((a: string, b: string) => {
-          return order === "asc" ? a.localeCompare(b) : b.localeCompare(a);
+          return order === Order.Ascending
+            ? a.localeCompare(b)
+            : b.localeCompare(a);
         });
         break;
 
@@ -70,7 +82,7 @@ export default function TickersTable(props: {
     }
 
     return sortedArr;
-  }, [orderBy, order, coinsArr]);
+  }, [orderBy, order, tickers]);
 
   return (
     <TableContainer>
@@ -81,7 +93,7 @@ export default function TickersTable(props: {
               <StyledTableCell key={column.id} align={column.align}>
                 <TableSortLabel
                   active={orderBy === column.id}
-                  direction={orderBy === column.id ? order : "asc"}
+                  direction={orderBy === column.id ? order : Order.Ascending}
                   onClick={() => handleSort(column.id)}
                 >
                   {column.label}
@@ -90,8 +102,8 @@ export default function TickersTable(props: {
             ))}
           </TableRow>
         </TableHead>
-        {sortedCoins.map((coin, coinIndex) => {
-          const tickers = props.tickers?.[coin] || [];
+        {sortedCoins.map((selectedCoin, coinIndex) => {
+          const tickersArr = tickers?.[selectedCoin] || [];
 
           const renderTickerRow = (
             ticker: TickerGroupedData,
@@ -106,7 +118,9 @@ export default function TickersTable(props: {
                 key={index}
                 onClick={() => handleTokenFromTicker(ticker.ticker.symbol)}
               >
-                <StyledTableCell>{index === 0 ? coin : ""}</StyledTableCell>
+                <StyledTableCell>
+                  {index === 0 ? selectedCoin : ""}
+                </StyledTableCell>
                 <StyledTableCell>
                   {ticker.ticker.last_price}{" "}
                   <span style={{ color: "grey" }}>{ticker.currency}</span>
@@ -119,13 +133,13 @@ export default function TickersTable(props: {
             );
           };
 
-          const firstTicker = tickers[0];
-          const restTickers = tickers.slice(1);
+          const firstTicker = tickersArr[0];
+          const restTickers = tickersArr.slice(1);
 
           return (
             <TableBody key={coinIndex} sx={{ cursor: "pointer" }}>
               {renderTickerRow(firstTicker, 0)}
-              {restTickers.map((ticker, tickerIndex) =>
+              {restTickers.map((ticker, tickerIndex: number) =>
                 renderTickerRow(ticker, tickerIndex + 1)
               )}
             </TableBody>

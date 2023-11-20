@@ -1,52 +1,24 @@
-import { useEffect, useState } from "react";
-import { OrderData } from "@/interface";
-import { Stack } from "@mui/material";
 import OrderTable from "./OrderTable";
-import fetchBookData from "@/services/fetchBookData";
-import { formatOrderBookData } from "@/util/formatOrderBookData";
 import useOrderBook from "@/util/hooks/orderBook";
-import { setOrderData } from "@/util/setOrderData";
+import { InnerStack, StyledStack } from "./styles/OrderTable.styles";
+import useAskBidData from "@/util/hooks/askBidData";
+import { CoinState } from "@/interface";
+import { useSelector } from "react-redux";
+import React from "react";
 
-export default function OrderBookTable(props: { coin: string }) {
-  const [bidData, setBidData] = useState<Array<OrderData>>([]);
-  const [askData, setAskData] = useState<Array<OrderData>>([]);
-  const [count, setCount] = useState(0);
-  const orderBook: OrderData | undefined = useOrderBook(props.coin);
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const orders: Array<Array<number>> = await fetchBookData(props.coin);
-      const orderDataArr: Array<OrderData> = orders.map((order) =>
-        formatOrderBookData(order)
-      );
-      orderDataArr.map((orderData) =>
-        setOrderData(orderData, count, setBidData, setAskData, setCount, true)
-      );
-    };
-    fetchOrders();
-  }, [props.coin]);
-
-  useEffect(() => {
-    if (orderBook)
-      setOrderData(orderBook, count, setBidData, setAskData, setCount,false);
-  }, [orderBook]);
+export default function OrderBookTable() {
+  const selectedCoin = useSelector((state: CoinState) => state.selectedCoin);
+  const orderBook = useOrderBook(selectedCoin);
+  const { askData, bidData } = useAskBidData(selectedCoin, orderBook);
 
   return (
-    <Stack
-      sx={{
-        flexDirection: "row",
-        justifyContent: "center",
-        margin: "auto",
-        marginRight: 18,
-        marginLeft: 18,
-      }}
-    >
-      <Stack sx={{ margin: "auto", paddingRight: 1 }}>
-        <OrderTable orderData={bidData} count={count} type="bid" />
-      </Stack>
-      <Stack sx={{ margin: "auto" }}>
-        <OrderTable orderData={askData} count={count} type="ask" />
-      </Stack>
-    </Stack>
+    <StyledStack>
+      <InnerStack>
+        <OrderTable orderData={bidData} type="bid" />
+      </InnerStack>
+      <InnerStack>
+        <OrderTable orderData={askData} type="ask" />
+      </InnerStack>
+    </StyledStack>
   );
 }

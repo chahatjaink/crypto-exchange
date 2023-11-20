@@ -1,7 +1,7 @@
-import { GroupedData } from "@/interface";
+import { TickerData } from "@/interface";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: GroupedData = {};
+const initialState: TickerData = {};
 
 const tickersSlice = createSlice({
   name: "tickers",
@@ -9,7 +9,7 @@ const tickersSlice = createSlice({
   reducers: {
     setTickers: (state, action) => {
       state = action.payload;
-      return state
+      return state;
     },
   },
 });

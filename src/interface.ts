@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { SelectInputProps } from "@mui/material/Select/SelectInput";
 import { Time } from "lightweight-charts";
 
@@ -60,16 +61,14 @@ export interface TickerGroupedData {
 }
 
 export interface TickersState {
-  tickers: GroupedData;
+  tickers: TickerData;
 }
 export interface CoinState {
-  coin: { coin: string };
+  selectedCoin: string;
 }
 
-export interface GroupedData {
-  [coin: string]: TickerGroupedData[];
+export interface TickerData {
+  [selectedCoin: string]: TickerGroupedData[];
 }
 
-export interface coinInitialState {
-  coin: string;
-}
+

@@ -1,12 +1,13 @@
+import React from "react";
 import Header from "@/components/Header/Header";
-import MainComponent from "@/components/MainComponent/MainComponent";
-import { MainStack } from "@/util/ohlc.styles";
+import OhlcPage from "@/components/OhlcPage/OhlcPage";
+import { MainStack } from "@/components/OhlcPage/ohlcPage.styles";
 
 export default function MainPage() {
-    return (
-        <MainStack>
-            <Header/>
-            <MainComponent  />
-        </MainStack>
-    )
+  return (
+    <MainStack>
+      <Header />
+      <OhlcPage />
+    </MainStack>
+  );
 }

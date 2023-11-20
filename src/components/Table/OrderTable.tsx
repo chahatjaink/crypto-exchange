@@ -1,19 +1,17 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { TableBody, TableHead, TableRow } from "@mui/material";
 import { OrderData } from "@/interface";
-import { config } from "@/configs/ohlcv.constant";
-import { StyledTableCell } from "./styles/TickerTable.styles";
+import {
+  StyledCell,
+  StyledHeadCell,
+  StyledHeadRow,
+  StyledTable,
+  StyledTableContainer,
+  grayTextStyles,
+} from "./styles/OrderTable.styles";
+import React from "react";
 
 export default function OrderTable(props: {
   orderData: Array<OrderData>;
-  count: number;
   type: string;
 }) {
   const columns = [
@@ -31,56 +29,44 @@ export default function OrderTable(props: {
   ];
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        width: "100%",
-        margin: "auto",
-        backgroundColor: config.defaultColor,
-        color: "white",
-      }}
-    >
-      <Table
-        padding="checkbox"
-        sx={{ minWidth: 500, borderCollapse: "collapse" }}
-        aria-label="caption table"
-      >
-        <caption style={{color:"GrayText"}}>Order Book</caption>
+    <StyledTableContainer>
+      <StyledTable>
+        <caption style={grayTextStyles}>Order Book</caption>
         <TableHead>
-          <TableRow sx={{ color: "GrayText" }}>
+          <StyledHeadRow>
             {props.type === "bid"
               ? columns.map((column) => (
-                  <TableCell sx={{ color: "GrayText" }} key={column.name}>
+                  <StyledHeadCell key={column.name}>
                     {column.name.charAt(0).toUpperCase() + column.name.slice(1)}
-                  </TableCell>
+                  </StyledHeadCell>
                 ))
-                : reversedColumns.map((column) => (
-                  <TableCell sx={{ color: "GrayText" }} key={column.name}>
+              : reversedColumns.map((column) => (
+                  <StyledHeadCell key={column.name}>
                     {column.name.charAt(0).toUpperCase() + column.name.slice(1)}
-                  </TableCell>
+                  </StyledHeadCell>
                 ))}
-          </TableRow>
+          </StyledHeadRow>
         </TableHead>
         {props.orderData.length > 0
           ? props.orderData.map((row: any, index: number) => (
-              <TableBody>
+              <TableBody key={index}>
                 <TableRow key={index}>
                   {props.type === "bid"
                     ? columns.map((column) => (
-                        <StyledTableCell key={`${column.name}${index}`}>
+                        <StyledCell key={`${column.name}${index}`}>
                           {row[column.name as keyof typeof row]}
-                        </StyledTableCell>
+                        </StyledCell>
                       ))
                     : reversedColumns.map((column) => (
-                        <StyledTableCell key={`${column.name}${index}`}>
+                        <StyledCell key={`${column.name}${index}`}>
                           {row[column.name as keyof typeof row]}
-                        </StyledTableCell>
+                        </StyledCell>
                       ))}
                 </TableRow>
               </TableBody>
             ))
           : null}
-      </Table>
-    </TableContainer>
+      </StyledTable>
+    </StyledTableContainer>
   );
 }

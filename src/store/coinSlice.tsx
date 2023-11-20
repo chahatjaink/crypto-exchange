@@ -1,20 +1,18 @@
-import { config } from '@/configs/ohlcv.constant';
-import { coinInitialState } from '@/interface';
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { config } from "@/configs/ohlcv.constant";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: coinInitialState = {
-    coin: config.defaultCoin,
-}
+const initialState: string = config.defaultCoin;
 
 const coinSlice = createSlice({
-    name: 'coin',
-    initialState,
-    reducers: {
-        setCoin: (state, action) => {
-            state.coin = action.payload;
-        },
+  name: "selectedCoin",
+  initialState,
+  reducers: {
+    setCoin: (state, action) => {
+      state = action.payload;
+      return state;
     },
-})
+  },
+});
 
 export const coinActions = coinSlice.actions;
 

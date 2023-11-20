@@ -6,7 +6,9 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "next",
+    "next/core-web-vitals"
   ],
   "parserOptions": {
     "ecmaVersion": 12,
@@ -20,8 +22,6 @@
     "react-hooks"
   ],
   "rules": {
-    "eqeqeq": "off",
-    "curly": "error",
-    "plugin1/rule1": "error"
+    "eqeqeq": "off"
   }
 }

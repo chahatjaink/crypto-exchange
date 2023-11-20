@@ -1,4 +1,5 @@
-import { GroupedData, Tickers } from "@/interface";
+/* eslint-disable no-unused-vars */
+import { TickerData, Tickers } from "@/interface";
 
 enum TickerProperty {
   SYMBOL = 0,
@@ -14,7 +15,7 @@ enum TickerProperty {
   LOW = 10,
 }
 
-export default function formatTickersData(tickerData: any): GroupedData {
+export default function formatTickersData(tickerData: any): TickerData {
   const tickers: Array<Tickers> = tickerData.map(
     (tickerRow: Array<number | string>) => {
       const volume: number =
@@ -41,17 +42,17 @@ export default function formatTickersData(tickerData: any): GroupedData {
     }
   );
 
-  const tickerGroupedData: GroupedData = tickers.reduce(
-    (groupedData: GroupedData, ticker) => {
+  const tickerGroupedData: TickerData = tickers.reduce(
+    (groupedData: TickerData, ticker) => {
       const symbol = ticker.symbol;
-      const coin = symbol.substring(1, 4);
+      const selectedCoin = symbol.substring(1, 4);
       const currency = symbol.substring(4);
 
-      if (!groupedData[coin]) {
-        groupedData[coin] = [];
+      if (!groupedData[selectedCoin]) {
+        groupedData[selectedCoin] = [];
       }
 
-      groupedData[coin].push({ currency, ticker });
+      groupedData[selectedCoin].push({ currency, ticker });
 
       return groupedData;
     },
